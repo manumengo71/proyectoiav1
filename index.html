@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>El Comparador de DMs (IA)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
+        font-family: 'Merriweather', serif;
+      }
+      .font-medieval {
+        font-family: 'MedievalSharp', cursive;
+      }
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #382e25; 
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #856d5a;
+        border-radius: 5px;
+        border: 2px solid #382e25;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a0846c;
+      }
+      /* Custom parchment background style */
+      .bg-parchment {
+        background-color: #f5e8c8;
+        background-image: url('https://www.transparenttextures.com/patterns/old-parchment.png');
+        color: #4a3c2d;
+        border: 2px solid #a0846c;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="text-stone-200">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

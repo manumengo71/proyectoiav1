@@ -1,11 +1,131 @@
-<div align="center">
+# 🎲 El Comparador de DMs (IA) - Edición Full-Stack
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+¡Bienvenido a la nueva era del Comparador de DMs! Esta ya no es solo una demo, sino una aplicación web Full-Stack completa diseñada para ofrecer una experiencia inmersiva y persistente en la comparación de DMs de IA.
 
-  <h1>Built with AI Studio</h2>
+Regístrate, guarda tus aventuras y continúa tus partidas cuando quieras. Todo con un nuevo diseño temático que te transportará a una taberna de fantasía.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## ✨ Características Principales
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+- **Autenticación de Usuarios**: Crea tu propia cuenta para guardar tu progreso de forma segura.
+- **Persistencia de Datos con MySQL**: Todas tus partidas y conversaciones se almacenan en una base de datos.
+- **Sala de Aventuras**: Un panel personal donde puedes ver, continuar o borrar tus partidas guardadas.
+- **Backend Seguro**: Un servidor Node.js (Express) gestiona la lógica, las llamadas a la API de Gemini (manteniendo tu clave segura) y la base de datos.
+- **Diseño Inmersivo Totalmente Renovado**:
+    - **Temática de Fantasía**: Fondos de madera y pergamino, tipografía medieval y colores cálidos.
+    - **Componentes Estilizados**: Botones, formularios y ventanas de chat diseñados para una máxima inmersión.
+    - **Lanzador de Dados Integrado**: Un panel de dados flotante para realizar tiradas (d4 a d20) directamente en la interfaz.
 
-</div>
+## 🛠️ Arquitectura y Tecnologías
+
+- **Frontend**: React, TypeScript, Tailwind CSS.
+- **Backend**: Node.js, Express.
+- **Base de Datos**: MySQL (gestionado a través de XAMPP o manualmente).
+- **API de IA**: Google Gemini API (`@google/genai`).
+- **Seguridad**: `bcryptjs` para el hash de contraseñas, `jsonwebtoken` para la gestión de sesiones.
+
+## 🚀 Instalación y Puesta en Marcha
+
+La instalación ahora consta de 3 partes: **Base de Datos**, **Backend** y **Frontend**.
+
+---
+
+### 1. Configuración de la Base de Datos (XAMPP - Método Recomendado)
+
+Usar XAMPP es la forma más sencilla de tener una base de datos MySQL funcionando.
+
+1.  **Instalar y Ejecutar XAMPP**:
+    -   Descarga e instala XAMPP desde el [sitio web oficial de Apache Friends](https://www.apachefriends.org/index.html).
+    -   Abre el **Panel de Control de XAMPP**.
+    -   Haz clic en **"Start"** para los módulos de **Apache** y **MySQL**. Deberían ponerse de color verde.
+
+2.  **Crear la Base de Datos con phpMyAdmin**:
+    -   Con Apache y MySQL en ejecución, abre tu navegador web y ve a `http://localhost/phpmyadmin/`.
+    -   En el panel izquierdo, haz clic en **"Nueva"** para crear una nueva base de datos.
+    -   **Nombre de la base de datos**: Escribe `dm_comparator`.
+    -   **Cotejamiento**: Selecciona `utf8mb4_unicode_ci` en el menú desplegable.
+    -   Haz clic en el botón **"Crear"**.
+
+3.  **Importar la Estructura de las Tablas**:
+    -   Una vez creada la base de datos, serás redirigido a su vista. Asegúrate de que `dm_comparator` está seleccionada en el panel izquierdo.
+    -   Haz clic en la pestaña **"Importar"** en el menú superior.
+    -   En la sección "Archivo a importar", haz clic en **"Seleccionar archivo"** y busca el archivo `sql/schema.sql` que se encuentra en la carpeta de este proyecto.
+    -   Deja todas las demás opciones como están y haz clic en el botón **"Importar"** (o "Continuar") en la parte inferior de la página.
+    -   Si todo va bien, verás un mensaje de éxito y las tablas `users`, `games`, y `messages` aparecerán en el panel izquierdo bajo la base de datos `dm_comparator`.
+
+¡Listo! Tu base de datos está preparada. Ahora puedes pasar a la configuración del Backend.
+
+---
+
+### 2. Configuración del Backend (Servidor)
+
+El servidor gestiona toda la lógica.
+
+1.  **Navega a la carpeta del servidor**:
+    ```bash
+    cd server
+    ```
+2.  **Instala las dependencias**:
+    ```bash
+    npm install
+    ```
+3.  **Crea el archivo de entorno (`.env`)**:
+    -   Crea un archivo llamado `.env` dentro de la carpeta `server`.
+    -   Añade las siguientes variables. **Usa esta configuración si estás usando XAMPP**:
+      ```env
+      # Configuración para la Base de Datos con XAMPP
+      DB_HOST=localhost
+      DB_USER=root
+      DB_PASSWORD=
+      DB_NAME=dm_comparator
+
+      # API de Gemini (reemplaza con tu clave)
+      API_KEY=TU_API_KEY_DE_GEMINI
+
+      # JWT Secret (puedes poner cualquier cadena aleatoria y segura)
+      JWT_SECRET=un_secreto_muy_largo_y_dificil_de_adivinar
+      ```
+      *Nota: Por defecto, el usuario `root` de XAMPP no tiene contraseña. Si has configurado una, ponla en `DB_PASSWORD`.*
+
+4.  **Inicia el servidor**:
+    ```bash
+    npm start
+    ```
+    Si todo va bien, verás un mensaje como `Servidor escuchando en el puerto 3001` y `Conectado a la base de datos MySQL.`. ¡No cierres esta terminal!
+
+---
+
+### 3. Configuración del Frontend (Cliente)
+
+Finalmente, inicia la interfaz de usuario.
+
+1.  **Abre una NUEVA terminal**: No uses la que está ejecutando el servidor.
+2.  **Navega a la raíz del proyecto** (la carpeta principal, no la carpeta `server`).
+3.  **Instala `live-server`** (si no lo hiciste antes):
+    ```bash
+    npm install -g live-server
+    ```
+4.  **Inicia el frontend**:
+    ```bash
+    live-server
+    ```
+
+`live-server` abrirá tu navegador. ¡Ahora deberías ver la nueva pantalla de login y estar listo para registrarte y jugar!
+
+---
+
+### (Alternativa) Configuración Manual de MySQL
+
+Si prefieres no usar XAMPP y tienes MySQL instalado de forma independiente, sigue estos pasos:
+
+1.  **Crea la Base de Datos y el Usuario**:
+    ```sql
+    CREATE DATABASE dm_comparator;
+    CREATE USER 'dm_user'@'localhost' IDENTIFIED BY 'tu_contraseña_segura';
+    GRANT ALL PRIVILEGES ON dm_comparator.* TO 'dm_user'@'localhost';
+    FLUSH PRIVILEGES;
+    ```
+2.  **Importa el Esquema**:
+    ```bash
+    mysql -u dm_user -p dm_comparator < sql/schema.sql
+    ```
+3.  **Configura tu archivo `.env`** en la carpeta `server` con los datos del usuario que creaste.

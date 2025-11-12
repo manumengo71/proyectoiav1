@@ -1,0 +1,5 @@
+{
+  "name": "El Comparador de DMs (IA)",
+  "description": "An application to compare the narrative and game mastering abilities of two different Large Language Models (LLMs) side-by-side in a Dungeons & Dragons style adventure.",
+  "requestFramePermissions": []
+}
