@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
+  font-family: 'Merriweather', serif;
+}
+.font-medieval {
+  font-family: 'MedievalSharp', cursive;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #382e25; 
+}
+::-webkit-scrollbar-thumb {
+  background: #856d5a;
+  border-radius: 5px;
+  border: 2px solid #382e25;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a0846c;
+}
+/* Custom parchment background style */
+.bg-parchment {
+  background-color: #f5e8c8;
+  background-image: url('https://www.transparenttextures.com/patterns/old-parchment.png');
+  color: #4a3c2d;
+  border: 2px solid #a0846c;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}

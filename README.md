@@ -17,7 +17,7 @@ Regístrate, guarda tus aventuras y continúa tus partidas cuando quieras. Todo 
 
 ## 🛠️ Arquitectura y Tecnologías
 
-- **Frontend**: React, TypeScript, Tailwind CSS.
+- **Frontend**: React, TypeScript, Vite, Tailwind CSS.
 - **Backend**: Node.js, Express.
 - **Base de Datos**: MySQL (gestionado a través de XAMPP o manualmente).
 - **API de IA**: Google Gemini API (`@google/genai`).
@@ -30,6 +30,8 @@ La instalación ahora consta de 3 partes: **Base de Datos**, **Backend** y **Fro
 ---
 
 ### 1. Configuración de la Base de Datos (XAMPP - Método Recomendado)
+
+(Esta sección no ha cambiado)
 
 Usar XAMPP es la forma más sencilla de tener una base de datos MySQL funcionando.
 
@@ -52,7 +54,7 @@ Usar XAMPP es la forma más sencilla de tener una base de datos MySQL funcionand
     -   Deja todas las demás opciones como están y haz clic en el botón **"Importar"** (o "Continuar") en la parte inferior de la página.
     -   Si todo va bien, verás un mensaje de éxito y las tablas `users`, `games`, y `messages` aparecerán en el panel izquierdo bajo la base de datos `dm_comparator`.
 
-¡Listo! Tu base de datos está preparada. Ahora puedes pasar a la configuración del Backend.
+¡Listo! Tu base de datos está preparada.
 
 ---
 
@@ -60,15 +62,16 @@ Usar XAMPP es la forma más sencilla de tener una base de datos MySQL funcionand
 
 El servidor gestiona toda la lógica.
 
-1.  **Navega a la carpeta del servidor**:
+1.  **Abre una terminal**.
+2.  **Navega a la carpeta del servidor**:
     ```bash
     cd server
     ```
-2.  **Instala las dependencias**:
+3.  **Instala las dependencias**:
     ```bash
     npm install
     ```
-3.  **Crea el archivo de entorno (`.env`)**:
+4.  **Crea el archivo de entorno (`.env`)**:
     -   Crea un archivo llamado `.env` dentro de la carpeta `server`.
     -   Añade las siguientes variables. **Usa esta configuración si estás usando XAMPP**:
       ```env
@@ -86,11 +89,11 @@ El servidor gestiona toda la lógica.
       ```
       *Nota: Por defecto, el usuario `root` de XAMPP no tiene contraseña. Si has configurado una, ponla en `DB_PASSWORD`.*
 
-4.  **Inicia el servidor**:
+5.  **Inicia el servidor**:
     ```bash
     npm start
     ```
-    Si todo va bien, verás un mensaje como `Servidor escuchando en el puerto 3001` y `Conectado a la base de datos MySQL.`. ¡No cierres esta terminal!
+    Si todo va bien, verás un mensaje como `Servidor escuchando en el puerto 3001`. **Deja esta terminal abierta ejecutando el servidor.**
 
 ---
 
@@ -100,32 +103,13 @@ Finalmente, inicia la interfaz de usuario.
 
 1.  **Abre una NUEVA terminal**: No uses la que está ejecutando el servidor.
 2.  **Navega a la raíz del proyecto** (la carpeta principal, no la carpeta `server`).
-3.  **Instala `live-server`** (si no lo hiciste antes):
+3.  **Instala las dependencias del frontend**:
     ```bash
-    npm install -g live-server
+    npm install
     ```
-4.  **Inicia el frontend**:
+4.  **Inicia el servidor de desarrollo del frontend**:
     ```bash
-    live-server
+    npm run dev
     ```
 
-`live-server` abrirá tu navegador. ¡Ahora deberías ver la nueva pantalla de login y estar listo para registrarte y jugar!
-
----
-
-### (Alternativa) Configuración Manual de MySQL
-
-Si prefieres no usar XAMPP y tienes MySQL instalado de forma independiente, sigue estos pasos:
-
-1.  **Crea la Base de Datos y el Usuario**:
-    ```sql
-    CREATE DATABASE dm_comparator;
-    CREATE USER 'dm_user'@'localhost' IDENTIFIED BY 'tu_contraseña_segura';
-    GRANT ALL PRIVILEGES ON dm_comparator.* TO 'dm_user'@'localhost';
-    FLUSH PRIVILEGES;
-    ```
-2.  **Importa el Esquema**:
-    ```bash
-    mysql -u dm_user -p dm_comparator < sql/schema.sql
-    ```
-3.  **Configura tu archivo `.env`** en la carpeta `server` con los datos del usuario que creaste.
+Vite iniciará el servidor de desarrollo y debería abrir automáticamente una pestaña en tu navegador en una dirección como `http://localhost:5173`. ¡Ahora deberías ver la pantalla de login y estar listo para registrarte y jugar!
