@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { getRandomAdventure } from '../services/apiService';
 
@@ -37,50 +38,60 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStartGame, 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-      <div className="bg-parchment rounded-lg shadow-2xl p-8 border-2 border-amber-900/50 w-full max-w-3xl max-h-[90vh] flex flex-col">
-        <div className="text-center mb-6">
-          <h1 className="text-4xl font-medieval text-stone-800 tracking-wider">
-            Forjar una Nueva Aventura
+    <div className="fixed inset-0 bg-black/95 flex items-center justify-center z-50 p-4 backdrop-blur-md transition-all">
+      <div className="bg-dm-card rounded-lg p-6 sm:p-8 w-full max-w-4xl max-h-[90vh] flex flex-col relative overflow-hidden shadow-[0_0_60px_rgba(127,29,29,0.2)]">
+        
+        {/* Header */}
+        <div className="text-center mb-6 relative z-10 border-b border-white/10 pb-4">
+          <h1 className="text-3xl font-medieval text-red-500 tracking-wider">
+            Forjar Nueva Aventura
           </h1>
-          <p className="text-stone-600 mt-2 text-lg">
-            Establece las crónicas que los DMs deberán narrar.
+          <p className="text-stone-400 mt-2 text-sm">
+            Establece los parámetros del mundo que vas a crear.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="flex-grow flex flex-col overflow-hidden">
-          <div className="mb-4">
-            <label htmlFor="game-title" className="block text-lg font-bold text-stone-700 mb-2">
+        {/* Content */}
+        <form onSubmit={handleSubmit} className="flex-grow flex flex-col overflow-hidden relative z-10 gap-6">
+          <div>
+            <label htmlFor="game-title" className="block text-xs font-bold text-stone-300 mb-2 uppercase tracking-wide ml-1">
               Título de la Crónica
             </label>
             <input
               id="game-title"
               type="text"
-              className="w-full p-3 bg-white/50 border-2 border-amber-800/50 rounded-md focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition-shadow duration-200 text-stone-800"
+              className="input-dm text-lg font-medieval tracking-wide"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Ej: La Sombra sobre Insmouth"
             />
           </div>
-          <div className="mb-6 flex-grow flex flex-col">
-            <label htmlFor="system-prompt" className="block text-lg font-bold text-stone-700 mb-2">
-              Decreto Inicial (Prompt)
+          
+          <div className="flex-grow flex flex-col min-h-0">
+            <label htmlFor="system-prompt" className="block text-xs font-bold text-stone-300 mb-2 uppercase tracking-wide ml-1">
+              Decreto Inicial (Prompt del Sistema)
             </label>
             <textarea
               id="system-prompt"
-              className="w-full p-3 bg-white/50 border-2 border-amber-800/50 rounded-md focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition-shadow duration-200 text-stone-800 resize-y flex-grow"
+              className="input-dm resize-none flex-grow h-40 font-mono text-sm leading-relaxed"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               placeholder="Escribe aquí el prompt que ambas IAs usarán para guiar la aventura..."
             />
           </div>
-          {randomizeError && <p className="text-red-600 text-center text-sm mb-4">{randomizeError}</p>}
-          <div className="flex gap-4 mt-auto">
+
+          {randomizeError && (
+             <div className="bg-red-950/50 text-red-400 text-center text-sm p-2 rounded border border-red-900/50">
+                {randomizeError}
+             </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row gap-4 mt-2">
              <button
               type="button"
               onClick={onClose}
               disabled={isLoading || isRandomizing}
-              className="flex-1 bg-stone-500 text-white font-bold py-3 px-4 rounded-lg hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-stone-800 focus:ring-stone-400 transition-all duration-200"
+              className="flex-1 bg-transparent text-stone-400 font-bold py-3 px-4 rounded border border-zinc-700 hover:bg-zinc-800 hover:text-white transition-all duration-200"
             >
               Cancelar
             </button>
@@ -88,16 +99,16 @@ const ConfigurationScreen: React.FC<ConfigurationScreenProps> = ({ onStartGame, 
               type="button"
               onClick={handleRandomize}
               disabled={isLoading || isRandomizing}
-              className="flex-1 bg-purple-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-stone-800 focus:ring-purple-500 transition-all duration-200 disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center"
+              className="flex-1 bg-purple-900/30 text-purple-200 font-bold py-3 px-4 rounded border border-purple-800/50 hover:bg-purple-900/50 hover:border-purple-500 hover:shadow-[0_0_15px_rgba(147,51,234,0.3)] transition-all duration-200 flex items-center justify-center"
             >
-              {isRandomizing ? 'Invocando...' : 'Buscar Inspiración'}
+              {isRandomizing ? 'Invocando...' : '✨ Inspiración Divina'}
             </button>
             <button
               type="submit"
               disabled={isLoading || isRandomizing || !prompt.trim() || !title.trim()}
-              className="flex-1 bg-amber-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-stone-800 focus:ring-amber-500 transition-all duration-200 disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center text-xl"
+              className="flex-1 btn-dm-primary font-bold py-3 px-4 rounded font-medieval text-lg"
             >
-              {isLoading ? 'Forjando...' : 'Comenzar'}
+              {isLoading ? 'Forjando...' : 'Comenzar Partida'}
             </button>
           </div>
         </form>

@@ -2,14 +2,17 @@
 
 ¡Bienvenido a la nueva era del Comparador de DMs! Esta ya no es solo una demo, sino una aplicación web Full-Stack completa diseñada para ofrecer una experiencia inmersiva y persistente en la comparación de DMs de IA.
 
+Ahora, uno de los DMs está potenciado por **Google Gemini** y el otro por **OpenAI ChatGPT**, permitiendo una comparación directa entre los dos modelos de IA más avanzados.
+
 Regístrate, guarda tus aventuras y continúa tus partidas cuando quieras. Todo con un nuevo diseño temático que te transportará a una taberna de fantasía.
 
 ## ✨ Características Principales
 
+- **Comparación Directa Gemini vs. ChatGPT**: Una partida, dos narradores de IA de primer nivel.
 - **Autenticación de Usuarios**: Crea tu propia cuenta para guardar tu progreso de forma segura.
 - **Persistencia de Datos con MySQL**: Todas tus partidas y conversaciones se almacenan en una base de datos.
 - **Sala de Aventuras**: Un panel personal donde puedes ver, continuar o borrar tus partidas guardadas.
-- **Backend Seguro**: Un servidor Node.js (Express) gestiona la lógica, las llamadas a la API de Gemini (manteniendo tu clave segura) y la base de datos.
+- **Backend Seguro**: Un servidor Node.js (Express) gestiona la lógica, las llamadas a las APIs (manteniendo tus claves seguras) y la base de datos.
 - **Diseño Inmersivo Totalmente Renovado**:
     - **Temática de Fantasía**: Fondos de madera y pergamino, tipografía medieval y colores cálidos.
     - **Componentes Estilizados**: Botones, formularios y ventanas de chat diseñados para una máxima inmersión.
@@ -20,7 +23,7 @@ Regístrate, guarda tus aventuras y continúa tus partidas cuando quieras. Todo 
 - **Frontend**: React, TypeScript, Vite, Tailwind CSS.
 - **Backend**: Node.js, Express.
 - **Base de Datos**: MySQL (gestionado a través de XAMPP o manualmente).
-- **API de IA**: Google Gemini API (`@google/genai`).
+- **APIs de IA**: Google Gemini API (`@google/genai`) y OpenAI API (`openai`).
 - **Seguridad**: `bcryptjs` para el hash de contraseñas, `jsonwebtoken` para la gestión de sesiones.
 
 ## 🚀 Instalación y Puesta en Marcha
@@ -73,7 +76,7 @@ El servidor gestiona toda la lógica.
     ```
 4.  **Crea el archivo de entorno (`.env`)**:
     -   Crea un archivo llamado `.env` dentro de la carpeta `server`.
-    -   Añade las siguientes variables. **Usa esta configuración si estás usando XAMPP**:
+    -   Añade las siguientes variables. **Necesitarás claves para las APIs de Gemini y OpenAI**.
       ```env
       # Configuración para la Base de Datos con XAMPP
       DB_HOST=localhost
@@ -81,8 +84,11 @@ El servidor gestiona toda la lógica.
       DB_PASSWORD=
       DB_NAME=dm_comparator
 
-      # API de Gemini (reemplaza con tu clave)
+      # API de Google Gemini (reemplaza con tu clave)
       API_KEY=TU_API_KEY_DE_GEMINI
+
+      # API de OpenAI (reemplaza con tu clave)
+      OPENAI_API_KEY=TU_API_KEY_DE_OPENAI
 
       # JWT Secret (puedes poner cualquier cadena aleatoria y segura)
       JWT_SECRET=un_secreto_muy_largo_y_dificil_de_adivinar

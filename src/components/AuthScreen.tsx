@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { login, register } from '../services/apiService';
 
@@ -22,7 +23,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
         onLogin(token);
       } else {
         await register(username, password);
-        // Automatically log in after successful registration
         const { token } = await login(username, password);
         onLogin(token);
       }
@@ -41,20 +41,23 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md bg-parchment rounded-lg shadow-2xl p-8 border-4 border-amber-900/50">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl sm:text-5xl font-medieval text-stone-800 tracking-wider">
-            El Comparador de DMs
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Decorative background effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/10 via-transparent to-transparent pointer-events-none"></div>
+
+      <div className="w-full max-w-md bg-dm-card p-8 rounded-xl relative z-10 border border-white/5 shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+        <div className="text-center mb-8 border-b border-white/10 pb-6">
+          <h1 className="text-4xl sm:text-5xl font-medieval text-red-500 tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            Dungeon Master
           </h1>
-          <p className="text-stone-600 mt-2 text-lg">
-            {isLogin ? 'Ingresa a la taberna' : 'Forja tu leyenda'}
-          </p>
+          <h2 className="text-lg font-medieval text-stone-400 mt-2 uppercase tracking-widest opacity-80">
+            Comparador de IA
+          </h2>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-bold text-stone-700 mb-2">
+            <label htmlFor="username" className="block text-xs font-bold text-stone-400 mb-1 uppercase tracking-wider ml-1">
               Nombre de Aventurero
             </label>
             <input
@@ -63,12 +66,13 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full p-3 bg-white/50 border-2 border-amber-800/50 rounded-md focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition-shadow duration-200 text-stone-800"
+              className="input-dm"
+              placeholder="Ej: Gandalf el Gris"
             />
           </div>
           <div>
-            <label htmlFor="password"className="block text-sm font-bold text-stone-700 mb-2">
-              Contraseña Secreta
+            <label htmlFor="password"className="block text-xs font-bold text-stone-400 mb-1 uppercase tracking-wider ml-1">
+              Contraseña
             </label>
             <input
               id="password"
@@ -76,27 +80,38 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full p-3 bg-white/50 border-2 border-amber-800/50 rounded-md focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition-shadow duration-200 text-stone-800"
+              className="input-dm"
+              placeholder="••••••••"
             />
           </div>
 
-          {error && <p className="text-red-600 text-center text-sm">{error}</p>}
+          {error && (
+            <div className="bg-red-950/50 border border-red-900 text-red-400 text-center text-sm p-3 rounded">
+                {error}
+            </div>
+          )}
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-amber-800 text-white font-bold py-3 px-4 rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-stone-800 focus:ring-amber-500 transition-all duration-200 disabled:bg-gray-600 flex items-center justify-center text-xl"
+            className="w-full btn-dm-primary font-bold py-3 px-4 rounded font-medieval text-xl tracking-wide mt-4"
           >
-            {isLoading ? 'Cargando...' : (isLogin ? 'Entrar' : 'Registrarse')}
+            {isLoading ? 'Conjurando...' : (isLogin ? 'Entrar al Reino' : 'Crear Personaje')}
           </button>
 
-          <p className="text-center text-sm text-stone-600">
-            {isLogin ? '¿No tienes una cuenta?' : '¿Ya eres un aventurero?'}
-            <button type="button" onClick={toggleForm} className="font-bold text-amber-700 hover:underline ml-2">
-              {isLogin ? 'Regístrate aquí' : 'Inicia sesión'}
-            </button>
-          </p>
+          <div className="text-center mt-6 pt-4 border-t border-white/5">
+            <p className="text-sm text-stone-500">
+              {isLogin ? '¿Aún no tienes historia?' : '¿Ya eres un veterano?'}
+              <button type="button" onClick={toggleForm} className="font-bold text-red-500 hover:text-red-400 hover:underline ml-2 transition-colors">
+                {isLogin ? 'Regístrate' : 'Inicia sesión'}
+              </button>
+            </p>
+          </div>
         </form>
+      </div>
+      
+      <div className="mt-8 text-stone-600 text-xs text-center opacity-50">
+        Potenciado por Google Gemini • Forjado en código
       </div>
     </div>
   );

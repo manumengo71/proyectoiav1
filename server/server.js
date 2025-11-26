@@ -32,23 +32,46 @@ async function connectToDatabase() {
   }
 }
 
-// --- GEMINI AI SETUP ---
+// --- AI APIs SETUP ---
 if (!process.env.API_KEY) {
   throw new Error("API_KEY environment variable not set for Gemini");
 }
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
+// DM 1: Fast (Standard)
 const DM_1_MODEL = 'gemini-2.5-flash';
-const DM_2_MODEL = 'gemini-2.5-pro';
+// DM 2: Reasoning (Thinking enabled)
+const DM_2_MODEL = 'gemini-2.5-flash';
+
 
 // --- HELPER FUNCTION FOR AI RESPONSE ---
-const getAIResponse = async (modelName, systemPrompt, history, prompt) => {
-    const chat = ai.chats.create({
-        model: modelName,
-        config: { systemInstruction: systemPrompt },
-        history: history,
-    });
-    const result = await chat.sendMessage(prompt);
-    return result.text;
+const getAIResponse = async (modelName, systemPrompt, genericHistory, prompt, thinkingBudget = 0) => {
+    try {
+        const contents = [
+            ...genericHistory,
+            { role: 'user', parts: [{ text: prompt }] }
+        ];
+
+        const config = {
+            systemInstruction: systemPrompt,
+        };
+
+        // Enable thinking if a budget is provided (Only for Gemini 2.5 models)
+        if (thinkingBudget > 0) {
+            config.thinkingConfig = { thinkingBudget: thinkingBudget };
+        }
+
+        const response = await ai.models.generateContent({
+            model: modelName,
+            contents: contents,
+            config: config,
+        });
+        return response.text;
+
+    } catch (error) {
+        console.error(`Error al llamar a la API del modelo ${modelName}:`, error);
+        return `[El DM (${modelName}) ha perdido la conexión con el plano material. Por favor intenta tu acción de nuevo.]`;
+    }
 };
 
 
@@ -118,6 +141,38 @@ app.get('/api/games', authenticateToken, async (req, res) => {
   }
 });
 
+// Delete a game
+app.delete('/api/games/:id', authenticateToken, async (req, res) => {
+    const gameId = req.params.id;
+    let connection;
+    try {
+        connection = await db.getConnection();
+        await connection.beginTransaction();
+
+        // Check ownership
+        const [games] = await connection.execute('SELECT id FROM games WHERE id = ? AND user_id = ?', [gameId, req.user.id]);
+        if (games.length === 0) {
+            await connection.rollback();
+            return res.status(404).json({ message: 'Partida no encontrada o no autorizada.' });
+        }
+
+        // Delete messages first (foreign key constraint)
+        await connection.execute('DELETE FROM messages WHERE game_id = ?', [gameId]);
+        
+        // Delete game
+        await connection.execute('DELETE FROM games WHERE id = ?', [gameId]);
+
+        await connection.commit();
+        res.json({ message: 'Partida eliminada con éxito.' });
+    } catch (error) {
+        if (connection) await connection.rollback();
+        console.error('Error deleting game:', error);
+        res.status(500).json({ message: 'Error al eliminar la partida.', error: error.message });
+    } finally {
+        if (connection) connection.release();
+    }
+});
+
 // Create a new randomized adventure concept
 app.post('/api/games/randomize', authenticateToken, async (req, res) => {
     try {
@@ -169,10 +224,12 @@ app.post('/api/games', authenticateToken, async (req, res) => {
         const gameId = result.insertId;
 
         // 2. Get initial responses from both DMs
-        const initialPrompt = "Comienza la aventura.";
+        // DM 1: Budget 0 (Standard)
+        // DM 2: Budget 1024 (Thinking enabled)
+        const initialPrompt = "Comienza la aventura describiendo la escena inicial.";
         const [response1, response2] = await Promise.all([
-            getAIResponse(DM_1_MODEL, system_prompt, [], initialPrompt),
-            getAIResponse(DM_2_MODEL, system_prompt, [], initialPrompt),
+            getAIResponse(DM_1_MODEL, system_prompt, [], initialPrompt, 0),
+            getAIResponse(DM_2_MODEL, system_prompt, [], initialPrompt, 1024),
         ]);
 
         // 3. Save initial AI responses to DB
@@ -238,20 +295,21 @@ app.post('/api/games/:id/action', authenticateToken, async (req, res) => {
         await connection.execute('INSERT INTO messages (game_id, dm_version, sender, text) VALUES (?, ?, ?, ?)', [gameId, 1, 'user', action]);
         await connection.execute('INSERT INTO messages (game_id, dm_version, sender, text) VALUES (?, ?, ?, ?)', [gameId, 2, 'user', action]);
         
-        // 3. Call both Gemini models
-        const callModel = async (modelName, dmVersion) => {
+        // 3. Call both AI models
+        const callModel = async (modelName, dmVersion, budget) => {
             const historyForModel = historyRows
                 .filter(m => m.dm_version === dmVersion)
                 .map(m => ({
                     role: m.sender === 'user' ? 'user' : 'model',
                     parts: [{ text: m.text }]
                 }));
-            return getAIResponse(modelName, game.system_prompt, historyForModel, action);
+            return getAIResponse(modelName, game.system_prompt, historyForModel, action, budget);
         };
 
+        // DM 1: Standard (0 budget), DM 2: Thinking (1024 budget)
         const [response1, response2] = await Promise.all([
-            callModel(DM_1_MODEL, 1),
-            callModel(DM_2_MODEL, 2),
+            callModel(DM_1_MODEL, 1, 0),
+            callModel(DM_2_MODEL, 2, 1024),
         ]);
 
         // 4. Save AI responses to DB

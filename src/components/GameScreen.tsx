@@ -10,8 +10,8 @@ interface GameScreenProps {
   onGoToDashboard: () => void;
 }
 
-const DM_1_MODEL_NAME = 'gemini-2.5-flash';
-const DM_2_MODEL_NAME = 'gemini-2.5-pro';
+const DM_1_MODEL_NAME = 'Gemini 2.5 Flash (Rápido)';
+const DM_2_MODEL_NAME = 'Gemini 2.5 Flash (Pensamiento)';
 
 const GameScreen: React.FC<GameScreenProps> = ({ game, onGoToDashboard }) => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,25 +41,25 @@ const GameScreen: React.FC<GameScreenProps> = ({ game, onGoToDashboard }) => {
     setIsLoading(true);
     setError(null);
     
-    // Optimistically update UI
-    const userMessage1: Message = { sender: 'user', text: action, dm_version: 1 };
-    const userMessage2: Message = { sender: 'user', text: action, dm_version: 2 };
+    // Optimistic update for immediate feedback
+    const tempId = Date.now();
+    const userMessage1: Message = { id: tempId, sender: 'user', text: action, dm_version: 1 };
+    const userMessage2: Message = { id: tempId + 1, sender: 'user', text: action, dm_version: 2 };
+    
     setMessages(prev => [...prev, userMessage1, userMessage2]);
 
     try {
       const { responses } = await sendGameAction(game.id, action);
-      // Replace optimistic update with real data from server
-      setMessages(prev => {
-        const nonUserMessages = prev.filter(m => m.sender !== 'user');
-        return [...nonUserMessages, ...responses];
-      });
-      // A more robust solution would be to refetch, but this is faster.
-      await loadHistory();
+      
+      // El servidor devuelve el historial completo o los mensajes actualizados correctamente.
+      // Si responses contiene TODO el historial (como está configurado en el server actual),
+      // simplemente reemplazamos el estado.
+      setMessages(responses);
 
     } catch (e: any) {
       setError(e.message || 'Ocurrió un error al enviar la acción.');
-      // Rollback optimistic update on error
-      setMessages(prev => prev.slice(0, -2));
+      // Rollback: remove the optimistic messages if request fails
+      setMessages(prev => prev.filter(m => m.id !== tempId && m.id !== tempId + 1));
     } finally {
       setIsLoading(false);
     }
@@ -69,31 +69,31 @@ const GameScreen: React.FC<GameScreenProps> = ({ game, onGoToDashboard }) => {
   const history2 = messages.filter(m => m.dm_version === 2);
 
   return (
-    <div className="flex flex-col h-screen p-4 gap-4 relative">
-      <header className="flex-shrink-0 bg-black/40 border-2 border-amber-900/60 rounded-lg p-3 shadow-lg flex justify-between items-center">
-        <h1 className="text-2xl md:text-3xl font-medieval text-amber-300 tracking-wider">
+    <div className="flex flex-col h-screen p-2 md:p-4 gap-4 relative">
+      <header className="flex-shrink-0 bg-dm-card rounded-lg p-3 shadow-lg flex justify-between items-center z-10">
+        <h1 className="text-xl md:text-2xl font-medieval text-red-500 tracking-wider truncate mr-4">
           {game.title || "Crónicas de una Aventura"}
         </h1>
         <button 
           onClick={onGoToDashboard}
-          className="bg-amber-800 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-md border border-amber-900 transition-colors duration-200 text-sm"
+          className="bg-zinc-800 hover:bg-zinc-700 text-stone-300 font-bold py-2 px-3 text-xs md:text-sm rounded-md border border-zinc-600 transition-colors duration-200 whitespace-nowrap"
         >
-          Volver a la Sala
+          Salir
         </button>
       </header>
 
       {error && (
-        <div className="bg-red-900/80 border border-red-600 text-white p-3 text-center rounded-md">
+        <div className="bg-red-900/50 border border-red-600 text-white p-2 text-center rounded-md text-sm">
           <strong>Error:</strong> {error}
         </div>
       )}
 
       <main className="flex-grow flex flex-col md:flex-row overflow-hidden gap-4">
-        <ChatColumn title={`DM 1 (${DM_1_MODEL_NAME})`} messages={history1} />
-        <ChatColumn title={`DM 2 (${DM_2_MODEL_NAME})`} messages={history2} />
+        <ChatColumn title={`DM 1: ${DM_1_MODEL_NAME}`} messages={history1} />
+        <ChatColumn title={`DM 2: ${DM_2_MODEL_NAME}`} messages={history2} />
       </main>
 
-      <footer className="flex-shrink-0 p-4 rounded-lg bg-black/40 border-2 border-amber-900/60">
+      <footer className="flex-shrink-0 p-3 rounded-lg bg-dm-card z-10">
         <ActionInput onSendAction={handleSendAction} isLoading={isLoading} />
       </footer>
       
