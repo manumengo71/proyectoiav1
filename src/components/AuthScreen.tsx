@@ -109,10 +109,6 @@ const AuthScreen: React.FC<AuthScreenProps> = ({ onLogin }) => {
           </div>
         </form>
       </div>
-      
-      <div className="mt-8 text-stone-600 text-xs text-center opacity-50">
-        Potenciado por Google Gemini • Forjado en código
-      </div>
     </div>
   );
 };
