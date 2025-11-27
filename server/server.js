@@ -41,7 +41,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 // DM 1: Fast (Standard)
 const DM_1_MODEL = 'gemini-2.5-flash';
 // DM 2: Reasoning (Thinking enabled)
-const DM_2_MODEL = 'gemini-2.5-flash';
+const DM_2_MODEL = 'gemini-2.5-pro';
 
 
 // --- HELPER FUNCTION FOR AI RESPONSE ---

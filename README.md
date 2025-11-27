@@ -94,4 +94,14 @@ Usar XAMPP es la forma más sencilla de tener una base de datos MySQL funcionand
     npm run dev
     ```
 
+---
+
+### 4. Documentos adicionales
+
+    Si entramos dentro de la carpeta "documentos" encontrarás:
+
+1. **Informe de Análisis Comparativo**
+
+---
+
 Accede a `http://localhost:5173` para comenzar tu aventura.
